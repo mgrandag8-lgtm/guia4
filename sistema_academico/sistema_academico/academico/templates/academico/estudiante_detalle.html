@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block titulo %}Ficha de {{ estudiante.nombre_completo }}{% endblock %}
+
+{% block contenido %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Detalle del Estudiante</h2>
+    <div class="d-flex gap-2">
+        <a href="{% url 'academico:estudiante_pdf' estudiante.pk %}" target="_blank" class="btn btn-danger">
+            Ficha PDF
+        </a>
+        <a href="{% url 'academico:estudiante_editar' estudiante.pk %}" class="btn btn-warning">Editar</a>
+        <a href="{% url 'academico:estudiante_lista' %}" class="btn btn-secondary">Volver a la lista</a>
+    </div>
+</div>
+
+<!-- Tarjeta de información personal -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <div class="row align-items-center">
+            <div class="col-md-3 text-center mb-3 mb-md-0">
+                {% if estudiante.foto %}
+                    <img src="{{ estudiante.foto.url }}" alt="Foto de {{ estudiante.nombre_completo }}"
+                         class="img-thumbnail rounded-circle" style="width: 160px; height: 160px; object-fit: cover;">
+                {% else %}
+                    <div class="bg-secondary text-white rounded-circle d-inline-flex align-items-center justify-content-center"
+                         style="width: 160px; height: 160px; font-size: 2.5rem;">
+                        {{ estudiante.nombres|slice:":1" }}{{ estudiante.apellidos|slice:":1" }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-md-9">
+                <h4>{{ estudiante.nombre_completo }}</h4>
+                <p class="text-muted mb-2">{{ estudiante.carrera.nombre }} — {{ estudiante.carrera.facultad.nombre }}</p>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-6 mb-2"><strong>Cédula:</strong> {{ estudiante.cedula }}</div>
+                    <div class="col-sm-6 mb-2"><strong>Correo:</strong> {{ estudiante.email }}</div>
+                    <div class="col-sm-6 mb-2"><strong>Teléfono:</strong> {{ estudiante.telefono }}</div>
+                    <div class="col-sm-6 mb-2">
+                        <strong>Fecha de nacimiento:</strong>
+                        {{ estudiante.fecha_nacimiento|date:"d/m/Y"|default:"No registrada" }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabla de matrículas y notas -->
+<h4 class="mb-3">Historial de Matrículas y Notas</h4>
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Periodo</th>
+                        <th>Curso</th>
+                        <th>Paralelo / Jornada</th>
+                        <th class="text-center">N1</th>
+                        <th class="text-center">N2</th>
+                        <th class="text-center">N3</th>
+                        <th class="text-center">Promedio</th>
+                        <th class="text-center">Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for mat in matriculas %}
+                    <tr>
+                        <td>{{ mat.seccion.periodo.nombre }}</td>
+                        <td>{{ mat.seccion.curso.codigo }} - {{ mat.seccion.curso.nombre }}</td>
+                        <td>{{ mat.seccion.paralelo }} ({{ mat.seccion.get_jornada_display }})</td>
+                        {% if mat.nota %}
+                            <td class="text-center">{{ mat.nota.n1 }}</td>
+                            <td class="text-center">{{ mat.nota.n2 }}</td>
+                            <td class="text-center">{{ mat.nota.n3 }}</td>
+                            <td class="text-center fw-bold">{{ mat.nota.promedio }}</td>
+                            <td class="text-center">
+                                {% if mat.nota.estado == "aprobado" %}
+                                    <span class="badge bg-success">Aprobado</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Reprobado</span>
+                                {% endif %}
+                            </td>
+                        {% else %}
+                            <td colspan="5" class="text-center text-muted">Sin notas registradas</td>
+                        {% endif %}
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center py-4 text-muted">
+                            Este estudiante aún no tiene matrículas registradas.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block titulo %}Detalle de Matrícula{% endblock %}
+
+{% block contenido %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Detalle de Matrícula</h2>
+    <div class="d-flex gap-2">
+        <a href="{% url 'academico:matricula_pdf' matricula.pk %}" target="_blank" class="btn btn-danger">
+            Comprobante PDF
+        </a>
+        <a href="{% url 'academico:matricula_editar' matricula.pk %}" class="btn btn-warning">Editar</a>
+        <a href="{% url 'academico:matricula_lista' %}" class="btn btn-secondary">Volver a la lista</a>
+    </div>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-dark text-white">
+        <h5 class="mb-0">Información de Inscripción</h5>
+    </div>
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <strong>Estudiante:</strong> {{ matricula.estudiante.nombre_completo }} ({{ matricula.estudiante.cedula }})
+            </div>
+            <div class="col-md-6">
+                <strong>Carrera:</strong> {{ matricula.estudiante.carrera.nombre }}
+            </div>
+            <div class="col-md-6">
+                <strong>Curso:</strong> {{ matricula.seccion.curso.codigo }} - {{ matricula.seccion.curso.nombre }}
+            </div>
+            <div class="col-md-6">
+                <strong>Sección:</strong> Paralelo {{ matricula.seccion.paralelo }} · {{ matricula.seccion.get_jornada_display }}
+            </div>
+            <div class="col-md-6">
+                <strong>Periodo:</strong> {{ matricula.seccion.periodo.nombre }}
+            </div>
+            <div class="col-md-6">
+                <strong>Fecha de Matrícula:</strong> {{ matricula.fecha|date:"d/m/Y" }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-light">
+        <h5 class="mb-0">Registro de Calificaciones</h5>
+    </div>
+    <div class="card-body p-0">
+        {% if matricula.nota %}
+        <div class="table-responsive">
+            <table class="table table-bordered text-center align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Nota 1 (N1)</th>
+                        <th>Nota 2 (N2)</th>
+                        <th>Nota 3 (N3)</th>
+                        <th>Promedio Final</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="fs-5">{{ matricula.nota.n1 }}</td>
+                        <td class="fs-5">{{ matricula.nota.n2 }}</td>
+                        <td class="fs-5">{{ matricula.nota.n3 }}</td>
+                        <td class="fs-5 fw-bold">{{ matricula.nota.promedio }}</td>
+                        <td>
+                            {% if matricula.nota.estado == "aprobado" %}
+                                <span class="badge bg-success fs-6">Aprobado</span>
+                            {% else %}
+                                <span class="badge bg-danger fs-6">Reprobado</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="p-4 text-center text-muted">
+            Esta matrícula aún no tiene calificaciones registradas.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

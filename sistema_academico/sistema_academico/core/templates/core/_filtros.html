@@ -1,0 +1,63 @@
+<div class="card shadow-sm mb-3">
+    <div class="card-body">
+        <form method="get">
+            <!-- Campos del formulario de filtro (si la vista definió filtro_form_class) -->
+            {% if filtro_form %}
+            <div class="row g-3 align-items-end mb-3">
+                {% for field in filtro_form %}
+                <div class="col-md-3">
+                    <label for="{{ field.id_for_label }}" class="form-label small fw-semibold mb-1">
+                        {{ field.label }}
+                    </label>
+                    {{ field }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <!-- Selector desplegable de columnas -->
+                {% if campos_disponibles %}
+                <details class="border rounded px-3 py-1 bg-light">
+                    <summary class="fw-semibold small" style="cursor: pointer;">
+                        Columnas ({{ campos_seleccionados|length }}/{{ campos_disponibles|length }})
+                    </summary>
+                    <div class="d-flex flex-wrap gap-3 pt-2 pb-1">
+                        {% for ruta, titulo in campos_disponibles %}
+                        <div class="form-check form-check-inline m-0">
+                            <input class="form-check-input" type="checkbox" name="campos"
+                                   value="{{ ruta }}" id="col_{{ forloop.counter }}"
+                                   {% if ruta in campos_seleccionados %}checked{% endif %}>
+                            <label class="form-check-label small" for="col_{{ forloop.counter }}">
+                                {{ titulo }}
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </details>
+                {% else %}
+                <div></div>
+                {% endif %}
+
+                <!-- Botones de acción y exportación -->
+                <div class="d-flex gap-2">
+                    <a href="?{% if consulta %}{{ consulta }}&{% endif %}exportar=excel"
+                       class="btn btn-success btn-sm">
+                        Excel
+                    </a>
+                    <a href="?{% if consulta %}{{ consulta }}&{% endif %}exportar=pdf"
+                       target="_blank"
+                       class="btn btn-danger btn-sm">
+                        PDF
+                    </a>
+                    <a href="{{ request.path }}" class="btn btn-outline-secondary btn-sm">
+                        Limpiar
+                    </a>
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        Filtrar
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

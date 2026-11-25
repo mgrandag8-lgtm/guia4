@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block titulo %}Inicio - Sistema Académico{% endblock %}
+
+{% block contenido %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-0">Panel Principal</h2>
+        <p class="text-muted mb-0">
+            Periodo activo:
+            <strong>{{ periodo_activo.nombre|default:"Ninguno activo" }}</strong>
+        </p>
+    </div>
+</div>
+
+<!-- Tarjetas de resumen -->
+<div class="row g-4">
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm bg-primary text-white h-100">
+            <div class="card-body">
+                <h6 class="text-uppercase opacity-75">Total Estudiantes</h6>
+                <h2 class="display-5 fw-bold mb-0">{{ total_estudiantes }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm bg-success text-white h-100">
+            <div class="card-body">
+                <h6 class="text-uppercase opacity-75">Secciones Activas</h6>
+                <h2 class="display-5 fw-bold mb-0">{{ total_secciones }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm bg-info text-dark h-100">
+            <div class="card-body">
+                <h6 class="text-uppercase opacity-75">Total Matrículas</h6>
+                <h2 class="display-5 fw-bold mb-0">{{ total_matriculas }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm bg-warning text-dark h-100">
+            <div class="card-body">
+                <h6 class="text-uppercase opacity-75">% Aprobados</h6>
+                <h2 class="display-5 fw-bold mb-0">{{ porcentaje_aprobados }}%</h2>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
